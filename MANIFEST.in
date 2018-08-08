@@ -1,0 +1,4 @@
+include bpsrender/bscripts/*.py
+include LICENSE
+include README.rst
+include bscripts
