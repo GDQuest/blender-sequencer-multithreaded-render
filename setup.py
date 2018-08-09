@@ -22,12 +22,11 @@ setup(
         'Topic :: Multimedia :: Video',
         'Topic :: Utilities'
     ],
-    # TODO: change to new separate repository
-    url='http://github.com/GDquest/Blender-power-sequencer',
+    url='https://gitlab.com/razcore/BPSRender',
     keywords='blender render parallel multiprocess speedup utility'
     ' productivty',
     author='Nathan Lovato',
-    author_email='nathan@gdquest.com',
+    author_email='razcore.art@gmail.com',
     license='GPLv3',
     packages=['bpsrender'],
     install_requires=['tqdm'],
