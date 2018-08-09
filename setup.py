@@ -25,7 +25,7 @@ setup(
     url='https://gitlab.com/razcore/BPSRender',
     keywords='blender render parallel multiprocess speedup utility'
     ' productivty',
-    author='Nathan Lovato',
+    author='Razvan C. Radulescu',
     author_email='razcore.art@gmail.com',
     license='GPLv3',
     packages=['bpsrender'],
