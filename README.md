@@ -41,3 +41,8 @@ optional arguments:
   -j, --join-only       ONLY JOIN the mixdown with the video. This will
                         produce the final render
 ```
+
+## Known Issues
+
+[  ] CTRL-C interrupt leaves subprocesses running in the background
+[  ] CTRL-C interrupt doesn't clean the folders yet
