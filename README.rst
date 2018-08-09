@@ -58,5 +58,5 @@ After installing the script, get help by writing ``bpsrender -h``:
 Known Issues
 ------------
 
-[ ] CTRL-C interrupt leaves subprocesses running in the background [ ]
-CTRL-C interrupt doesn't clean the folders yet
+-  [ ] CTRL-C interrupt leaves subprocesses running in the background
+-  [ ] CTRL-C interrupt doesn't clean the folders yet

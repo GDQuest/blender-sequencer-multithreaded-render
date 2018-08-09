@@ -44,5 +44,5 @@ optional arguments:
 
 ## Known Issues
 
-[  ] CTRL-C interrupt leaves subprocesses running in the background
-[  ] CTRL-C interrupt doesn't clean the folders yet
+- [  ] CTRL-C interrupt leaves subprocesses running in the background
+- [  ] CTRL-C interrupt doesn't clean the folders yet
