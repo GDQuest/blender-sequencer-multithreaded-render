@@ -109,7 +109,7 @@ def call_probe(cfg, clargs, cmds, **kwargs):
                 tmp = map(lambda x: x[4:].strip().split(), tmp)
                 frame_start, frame_end, ext = chain(*tmp)
             except BSError as e:
-                LOGGER.error(e.message)
+                LOGGER.error(e)
             except KeyboardInterrupt:
                 raise
             finally:
@@ -121,6 +121,8 @@ def call_probe(cfg, clargs, cmds, **kwargs):
            'frame_end': int(frame_end),
            'frames_total': int(frame_end) - int(frame_start) + 1,
            'ext': ext}
+    if out['ext'] == 'UNDEFINED':
+        raise BSError('Video extension is {ext}. Stopping!'.format(ext=ext))
     printd(cfg, 'Probing done')
     return out
 
@@ -157,7 +159,7 @@ def call_mixdown(cfg, clargs, cmds, **kwargs):
                 tmp = map(lambda x: x[4:].strip().split(), tmp)
                 kickstart(tmp)
             except BSError as e:
-                LOGGER.error(e.message)
+                LOGGER.error(e)
             except KeyboardInterrupt:
                 raise
             finally:
@@ -202,7 +204,7 @@ def call_chunk(cfg, clargs, queue, cmd, **kwargs):
                 kickstart(map(queue.put, tmp))
                 queue.put(False)
             except BSError as e:
-                LOGGER.error(e.message)
+                LOGGER.error(e)
 
 
 def call_video(cfg, clargs, cmds, **kwargs):

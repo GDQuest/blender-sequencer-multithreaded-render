@@ -1,9 +1,21 @@
 import bpy
-import os.path as osp
+
+EXT = {
+    'AVI_JPEG': '.avi',
+    'AVI_RAW': '.avi',
+    'FFMPEG': {
+        'MKV': '.mkv',
+        'OGG': '.ogv',
+        'QUICKTIME': '.mov',
+        'AVI': '.avi',
+        'MPEG4': '.mp4'
+    }
+}
 
 scene = bpy.context.scene
-print('BPS:{} {} {}'.format(
-    scene.frame_start,
-    scene.frame_end,
-    osp.splitext(scene.render.filepath)[1]))
+
+ext = EXT.get(scene.render.image_settings.file_format, 'UNDEFINED')
+if scene.render.image_settings.file_format == 'FFMPEG':
+    ext = ext[scene.render.ffmpeg.format]
+print('BPS:{} {} {}'.format(scene.frame_start, scene.frame_end, ext))
 

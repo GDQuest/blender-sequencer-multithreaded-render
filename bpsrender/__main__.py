@@ -14,7 +14,8 @@ from functools import partial
 
 from .calls import call
 from .config import CONFIG as C
-from .helpers import kickstart, prints
+from .config import LOGGER
+from .helpers import BSError, kickstart, prints
 from .setup import setup
 
 # https://github.com/mikeycal/the-video-editors-render-script-for-blender#configuring-the-script
@@ -99,6 +100,8 @@ def main():
         clargs = parse_arguments(C)
         cmds, kwargs = setup(C, clargs)
         kickstart(map(partial(call, C, clargs, **kwargs), cmds))
+    except BSError as e:
+        LOGGER.error(e)
     except KeyboardInterrupt:
         # TODO: add actual clean up code
         prints(C, 'DirtyInterrupt. Exiting', s='\n\n', e='...')
