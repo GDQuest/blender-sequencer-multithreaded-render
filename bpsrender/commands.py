@@ -24,10 +24,12 @@ def get_commands_probe(cfg, clargs, **kwargs):
     An iterator for which each element is a list to be sent to functions like
     `subprocess.run`.
     """
-    out = ('blender --background {blendfile} --python {probe_py_normalized}'
-           ' --disable-autoexec'.format(**cfg, **vars(clargs), **kwargs))
-    LOGGER.debug('CMD-PROBE: {cmd}'.format(cmd=out))
-    return iter((out.split(),))
+    out = ('blender',
+           '--background', clargs.blendfile,
+           '--python', kwargs['probe_py_normalized'],
+           '--disable-autoexec')
+    LOGGER.debug('CMD-PROBE: {cmd}'.format(cmd=' '.join(out)))
+    return iter((out,))
 
 
 def get_commands_chunk(cfg, clargs, **kwargs):
@@ -50,13 +52,17 @@ def get_commands_chunk(cfg, clargs, **kwargs):
     An iterator for which each element is a list to be sent to functions like
     `subprocess.run`.
     """
-    out = ('blender --background {blendfile} --python {video_py_normalized}'
-           ' --disable-autoexec --render-output {render_chunk_path}'
-           ' -s {w_frame_start} -e {w_frame_end} --render-anim'
-           .format(**cfg, **vars(clargs), **kwargs))
+    out = ('blender',
+           '--background', clargs.blendfile,
+           '--python', kwargs['video_py_normalized'],
+           '--disable-autoexec',
+           '--render-output', kwargs['render_chunk_path'],
+           '-s', str(kwargs['w_frame_start']),
+           '-e', str(kwargs['w_frame_end']),
+           '--render-anim')
     LOGGER.debug('CMD-CHUNK({w_frame_start}-{w_frame_end}): {cmd}'
-                 .format(cmd=out, **kwargs))
-    return iter((out.split(),))
+                 .format(cmd=' '.join(out), **kwargs))
+    return iter((out,))
 
 
 def get_commands_video(cfg, clargs, **kwargs):
@@ -120,8 +126,12 @@ def get_commands_mixdown(cfg, clargs, **kwargs):
     out = ('blender --background {blendfile} --python {mixdown_py_normalized}'
            ' --disable-autoexec -- {render_mixdown_path}'
            .format(**cfg, **vars(clargs), **kwargs))
-    LOGGER.debug('CMD-MIXDOWN: {cmd}'.format(cmd=out))
-    return iter((out.split(),))
+    out = ('blender',
+           '--background', clargs.blendfile,
+           '--python', kwargs['mixdown_py_normalized'],
+           '--disable-autoexec', '--', kwargs['render_mixdown_path'])
+    LOGGER.debug('CMD-MIXDOWN: {cmd}'.format(cmd=' '.join(out)))
+    return iter((out,))
 
 
 def get_commands_concatenate(cfg, clargs, **kwargs):
@@ -145,10 +155,16 @@ def get_commands_concatenate(cfg, clargs, **kwargs):
     An iterator for which each element is a tuple to be sent to functions like
     `subprocess.run`.
     """
-    out = ('ffmpeg -stats -f concat -safe -0 -i {chunks_file_path} -c copy'
-           ' -y {render_video_path}'.format(**kwargs))
-    LOGGER.debug('CMD-CONCATENATE: {cmd}'.format(cmd=out))
-    return iter((out.split(),))
+    out = ('ffmpeg',
+           '-stats',
+           '-f', 'concat',
+           '-safe',
+           '-0',
+           '-i', kwargs['chunks_file_path'],
+           '-c', 'copy',
+           '-y', kwargs['render_video_path'])
+    LOGGER.debug('CMD-CONCATENATE: {cmd}'.format(cmd=' '.join(out)))
+    return iter((out,))
 
 
 def get_commands_join(cfg, clargs, **kwargs):
@@ -172,11 +188,17 @@ def get_commands_join(cfg, clargs, **kwargs):
     An iterator for which each element is a tuple to be sent to functions like
     `subprocess.run`.
     """
-    out = ('ffmpeg -stats -i {render_video_path} -i {render_mixdown_path}'
-           ' -map 0:v:0 -c:v copy -map 1:a:0 -c:a aac -b:a 192k'
-           ' -y {render_audiovideo_path}'.format(**kwargs))
-    LOGGER.debug('CMD-JOIN: {cmd}'.format(cmd=out))
-    return iter((out.split(),))
+    out = ('ffmpeg', '-stats',
+           '-i', kwargs['render_video_path'],
+           '-i', kwargs['render_mixdown_path'],
+           '-map', '0:v:0',
+           '-c:v', 'copy',
+           '-map', '1:a:0',
+           '-c:a', 'aac',
+           '-b:a', '192k',
+           '-y', kwargs['render_audiovideo_path'])
+    LOGGER.debug('CMD-JOIN: {cmd}'.format(cmd=' '.join(out)))
+    return iter((out,))
 
 
 def get_commands(cfg, clargs, what='', **kwargs):
