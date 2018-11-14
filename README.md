@@ -9,7 +9,6 @@ This is a [standalone python package](https://pypi.org/project/bpsrender/) as we
 
 It can be installed as a standalone command line utility [via PiPy](https://pypi.org/project/bpsrender/): `pip install [--user] bpsrender`. *Note* that you have to have `$HOME/.local/bin` included in your `$PATH` environment variable (on unix) if you're going to install the utility locally (using `--user` when executing `pip`).
 
-BPSRender needs ffmpeg and ffprobe to be available on the PATH to work.
 
 ## Usage
 
@@ -48,6 +47,23 @@ optional arguments:
   -d, --video-only      ONLY render the VIDEO (implies --concatenate-only).
   -j, --join-only       ONLY JOIN the mixdown with the video. This will
                         produce the final render
+```
+
+## External Dependencies
+
+BPSRender requires
+
+- blender
+- ffmpeg
+
+to be available in the PATH environment variable in order to work. In case BPSRender will catch a missing dependency it will throw a message error similar to this:
+
+```
+BPSRender couldn't find external dependencies:
+[v] blender: /home/razvan/.local/bin/blender
+[X] ffmpeg: NOT FOUND
+Check if you have them properly installed and available in the PATH environemnt variable.
+Exiting...
 ```
 
 ## Known Issues
