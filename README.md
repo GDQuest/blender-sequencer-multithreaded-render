@@ -9,6 +9,7 @@ This is a [standalone python package](https://pypi.org/project/bpsrender/) as we
 
 It can be installed as a standalone command line utility [via PiPy](https://pypi.org/project/bpsrender/): `pip install [--user] bpsrender`. *Note* that you have to have `$HOME/.local/bin` included in your `$PATH` environment variable (on unix) if you're going to install the utility locally (using `--user` when executing `pip`).
 
+BPSRender needs ffmpeg and ffprobe to be available on the PATH to work.
 
 ## Usage
 
