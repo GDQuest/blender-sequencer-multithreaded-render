@@ -16,8 +16,8 @@ BPSRender needs ffmpeg and ffprobe to be available on the PATH to work.
 After installing the script, get help by writing `bpsrender -h`:
 
 ```
-usage: bpsrender [-h] [-o OUTPUT] [-w WORKERS] [-v] [--dry-run] [-m] [-c] [-d]
-                 [-j]
+usage: bpsrender [-h] [-o OUTPUT] [-w WORKERS] [-v] [--dry-run] [-s START]
+                 [-e END] [-m] [-c] [-d] [-j]
                  blendfile
 
 Multi-process Blender VSE rendering - will attempt to create a folder called
@@ -39,6 +39,9 @@ optional arguments:
   -v, --verbose         Increase verbosity level (eg. -vvv).
   --dry-run             Run the script without actual rendering or creating
                         files and folders. For DEBUGGING purposes
+  -s START, --start START
+                        Start frame
+  -e END, --end END     End frame
   -m, --mixdown-only    ONLY render the audio MIXDOWN
   -c, --concatenate-only
                         ONLY CONCATENATE the (already) available video chunks
