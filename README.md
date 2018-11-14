@@ -2,7 +2,7 @@
 
 This is a [standalone python package](https://pypi.org/project/bpsrender/) as well as a module which is used under the hood in the [Blender Power Sequencer add-on](https://github.com/GDquest/Blender-power-sequencer) to speed up rendering [VSE projects](https://docs.blender.org/manual/en/dev/editors/vse/index.html) by spawning Blender processes in background in parallel.
 
-![](assets/bpsrender.gif)
+![](https://i.imgur.com/BndLccL.gif)
 
 
 ## Install
