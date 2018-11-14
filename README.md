@@ -16,7 +16,8 @@ BPSRender needs ffmpeg and ffprobe to be available on the PATH to work.
 After installing the script, get help by writing `bpsrender -h`:
 
 ```
-usage: bpsrender [-h] [-w WORKERS] [-v] [--dry-run] [-m] [-c] [-d] [-j]
+usage: bpsrender [-h] [-o OUTPUT] [-w WORKERS] [-v] [--dry-run] [-m] [-c] [-d]
+                 [-j]
                  blendfile
 
 Multi-process Blender VSE rendering - will attempt to create a folder called
@@ -30,6 +31,9 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  -o OUTPUT, --output OUTPUT
+                        Output folder (will contain a `bpsrender` temp folder
+                        forrendering parts).
   -w WORKERS, --workers WORKERS
                         Number of workers in the pool (for video rendering).
   -v, --verbose         Increase verbosity level (eg. -vvv).

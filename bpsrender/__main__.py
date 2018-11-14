@@ -49,6 +49,12 @@ def parse_arguments(cfg):
         ' render which will be stored inside `render` and it will have the'
         ' same name as `blendfile`')
     p.add_argument(
+        '-o',
+        '--output',
+        default='.',
+        help='Output folder (will contain a `bpsrender` temp folder for'
+             'rendering parts).')
+    p.add_argument(
         '-w',
         '--workers',
         type=int,
@@ -85,6 +91,7 @@ def parse_arguments(cfg):
 
     clargs = p.parse_args()
     clargs.blendfile = osp.abspath(clargs.blendfile)
+    clargs.output = osp.abspath(clargs.output)
     # --video-only implies --concatenate-only
     clargs.concatenate_only = clargs.concatenate_only or clargs.video_only
     # --dry-run implies maximum verbosity level

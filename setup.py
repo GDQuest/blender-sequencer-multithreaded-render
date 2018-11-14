@@ -8,7 +8,7 @@ def readme():
 
 setup(
     name='bpsrender',
-    version='0.1.31',
+    version='0.1.32a',
     description='Blender Power Sequencer Renderer',
     long_description=readme(),
     classifiers=[

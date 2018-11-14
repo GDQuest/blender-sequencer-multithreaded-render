@@ -87,8 +87,7 @@ def setup_paths(cfg, clargs, **kwargs):
     It also creates the folder structure 'render/parts' where
     `clargs.blendfile` is stored on disk.
     """
-    render_path = osp.join(osp.dirname(clargs.blendfile), cfg['render_folder'])
-    render_parts_path = osp.join(render_path, cfg['parts_folder'])
+    render_parts_path = osp.join(clargs.output, cfg['parts_folder'])
     name = osp.splitext(osp.basename(clargs.blendfile))[0]
     render_mixdown_path = osp.join(
         render_parts_path, '{}_m.flac'.format(name))
@@ -97,10 +96,10 @@ def setup_paths(cfg, clargs, **kwargs):
     render_video_path = osp.join(
         render_parts_path, '{}_v{}'.format(name, kwargs['ext']))
     render_audiovideo_path = osp.join(
-        render_path, '{}{}'.format(name, kwargs['ext']))
+        clargs.output, '{}{}'.format(name, kwargs['ext']))
     chunks_file_path = osp.join(render_parts_path, cfg['chunks_file'])
 
-    out = {'render_path': render_path,
+    out = {'render_path': clargs.output,
            'render_parts_path': render_parts_path,
            'chunks_file_path': chunks_file_path,
            'render_chunk_path': render_chunk_path,
