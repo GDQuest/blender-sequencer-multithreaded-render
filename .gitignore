@@ -16,3 +16,4 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+README.rst
