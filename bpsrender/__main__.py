@@ -71,6 +71,18 @@ def parse_arguments(cfg):
         help=('Run the script without actual rendering or creating files and'
               ' folders. For DEBUGGING purposes'))
     p.add_argument(
+        '-s', '--start',
+        type=int,
+        default=None,
+        help='Start frame'
+    )
+    p.add_argument(
+        '-e', '--end',
+        type=int,
+        default=None,
+        help='End frame'
+    )
+    p.add_argument(
         '-m', '--mixdown-only',
         action='store_true',
         help='ONLY render the audio MIXDOWN')

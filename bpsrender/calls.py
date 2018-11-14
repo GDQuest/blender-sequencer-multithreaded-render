@@ -117,6 +117,8 @@ def call_probe(cfg, clargs, cmds, **kwargs):
         returncode = cp.poll()
         if returncode != 0:
             raise sp.CalledProcessError(returncode, cp.args)
+    frame_start = frame_start if clargs.start is None else clargs.start
+    frame_end = frame_end if clargs.end is None else clargs.end
     out = {'frame_start': int(frame_start),
            'frame_end': int(frame_end),
            'frames_total': int(frame_end) - int(frame_start) + 1,
