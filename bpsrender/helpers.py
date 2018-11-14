@@ -1,4 +1,5 @@
 from collections import deque
+from shutil import which
 
 
 class BSError(Exception):
@@ -7,6 +8,27 @@ class BSError(Exception):
     and gives error while trying to execute the script.
     """
     pass
+
+
+class ToolError(Exception):
+    """Raised if external dependencies aren't found on system.
+    """
+    pass
+
+
+def checktools(tools):
+    tools = [(t, which(t) or '') for t in tools]
+    check = {'tools': tools,
+             'test': all(map(lambda x: x[1], tools))}
+    if not check['test']:
+        msg = ["BPSRender couldn't find external dependencies:"]
+        msg += ['[{check}] {tool}: {path}'.format(check='v' if path is not '' else 'X',
+                                                  tool=tool, path=path or 'NOT FOUND')
+                for tool, path in check['tools']]
+        msg += [('Check if you have them properly installed and available in the PATH'
+                 ' environemnt variable.'),
+                'Exiting...']
+        raise ToolError('\n'.join(msg))
 
 
 def checkblender(what, search, cp, s):
