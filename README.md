@@ -1,4 +1,4 @@
-# Blender Power Sequencer Renderer
+# Blender Power Sequencer Render - BPSRender
 
 This is a [standalone python package](https://pypi.org/project/bpsrender/) as well as a module which is used under the hood in the [Blender Power Sequencer add-on](https://github.com/GDquest/Blender-power-sequencer) to speed up rendering [VSE projects](https://docs.blender.org/manual/en/dev/editors/vse/index.html) by spawning Blender processes in background in parallel.
 
@@ -53,10 +53,10 @@ optional arguments:
 
 BPSRender requires
 
-- blender
-- ffmpeg
+- `blender`
+- `ffmpeg`
 
-to be available in the PATH environment variable in order to work. In case BPSRender will catch a missing dependency it will throw a message error similar to this:
+to be available in the `$PATH` environment variable in order to work. In case BPSRender will catch a missing dependency it will throw a message error similar to this:
 
 ```
 BPSRender couldn't find external dependencies:
