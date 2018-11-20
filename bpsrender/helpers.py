@@ -40,8 +40,8 @@ def checkblender(what, search, cp, s):
     ----------
     what: str
     A tag used in the exception message.
-    search: str
-    The string to search for in Blender's output.
+    search: iter(str)
+    One or more string(s) to search for in Blender's output.
     cp: Popen
     Blender subprocess.
     s: PIPE
@@ -53,12 +53,15 @@ def checkblender(what, search, cp, s):
     The same pipe `s` is returned so that it can be iterated over on later
     steps.
     """
-    if search in s:
-        message = ('Script {what} was not properly executed in'
-                   ' Blender'.format(what=what),
-                   'CMD: {cmd}'.format(what=what, cmd=' '.join(cp.args)),
-                   'DUMP:'.format(what=what), s)
-        raise BSError('\n'.join(message))
+    if not isinstance(search, list):
+        search = [search]
+    for search_item in search:
+        if search_item in s:
+            message = ('Script {what} was not properly executed in'
+                       ' Blender'.format(what=what),
+                       'CMD: {cmd}'.format(what=what, cmd=' '.join(cp.args)),
+                       'DUMP:'.format(what=what), s)
+            raise BSError('\n'.join(message))
     return s
 
 
