@@ -103,7 +103,7 @@ def call_probe(cfg, clargs, cmds, **kwargs):
     if not clargs.dry_run:
         with sp.Popen(next(cmds), **kwargs_p) as cp:
             try:
-                tmp = map(partial(checkblender, 'PROBE', cfg['probe_py'], cp),
+                tmp = map(partial(checkblender, 'PROBE', [cfg['probe_py']], cp),
                           cp.stdout)
                 tmp = filter(lambda x: x.startswith('BPS'), tmp)
                 tmp = map(lambda x: x[4:].strip().split(), tmp)
@@ -156,7 +156,7 @@ def call_mixdown(cfg, clargs, cmds, **kwargs):
         with sp.Popen(next(cmds), **kwargs_p) as cp:
             try:
                 tmp = map(partial(checkblender, 'MIXDOWN',
-                                  cfg['mixdown_py'], cp), cp.stdout)
+                                  [cfg['mixdown_py']], cp), cp.stdout)
                 tmp = filter(lambda x: x.startswith('BPS'), tmp)
                 tmp = map(lambda x: x[4:].strip().split(), tmp)
                 kickstart(tmp)
@@ -197,7 +197,7 @@ def call_chunk(cfg, clargs, queue, cmd, **kwargs):
         # can't use nice functional syntax if we want to simplify with `with`
         with sp.Popen(cmd, **kwargs_p) as cp:
             try:
-                tmp = map(partial(checkblender, 'VIDEO', cfg['video_py'], cp),
+                tmp = map(partial(checkblender, 'VIDEO', [cfg['video_py'], 'The encoder timebase is not set'], cp),
                           cp.stdout)
                 tmp = filter(lambda x: x.startswith('Append frame'), tmp)
                 tmp = map(lambda x: x.split()[-1], tmp)
