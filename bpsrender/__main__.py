@@ -121,10 +121,8 @@ def main():
         checktools(tools)
         cmds, kwargs = setup(C, clargs)
         kickstart(map(partial(call, C, clargs, **kwargs), cmds))
-    except BSError as e:
+    except (BSError, ToolError) as e:
         LOGGER.error(e)
-    except ToolError as e:
-        print(e)
     except KeyboardInterrupt:
         # TODO: add actual clean up code
         prints(C, 'DirtyInterrupt. Exiting', s='\n\n', e='...')

@@ -17,5 +17,5 @@ scene = bpy.context.scene
 ext = EXT.get(scene.render.image_settings.file_format, 'UNDEFINED')
 if scene.render.image_settings.file_format == 'FFMPEG':
     ext = ext[scene.render.ffmpeg.format]
-print('BPS:{} {} {}'.format(scene.frame_start, scene.frame_end, ext))
+print('\nBPS:{} {} {}\n'.format(scene.frame_start, scene.frame_end, ext))
 
