@@ -1,18 +1,22 @@
-# Blender Power Sequencer Render - BPSRender
+# Blender Power Sequencer Render - BPSRender #
 
-This is a [standalone python package](https://pypi.org/project/bpsrender/) as well as a module which is used under the hood in the [Blender Power Sequencer add-on](https://github.com/GDquest/Blender-power-sequencer) to speed up rendering [VSE projects](https://docs.blender.org/manual/en/dev/editors/vse/index.html) by spawning Blender processes in background in parallel.
+This is a [standalone python package](https://pypi.org/project/bpsrender/) as well as a command-line program you can use to speed up rendering [VSE projects](https://docs.blender.org/manual/en/dev/editors/vse/index.html) by spawning Blender processes in background in parallel. 
+
+It is included with the [Blender Power Sequencer add-on](https://github.com/GDquest/Blender-power-sequencer).
 
 ![](https://i.imgur.com/BndLccL.gif)
 
 
-## Install
+## Install ##
 
-It can be installed as a standalone command line utility [via PiPy](https://pypi.org/project/bpsrender/): `pip install [--user] bpsrender`. *Note* that you have to have `$HOME/.local/bin` included in your `$PATH` environment variable (on unix) if you're going to install the utility locally (using `--user` when executing `pip`).
+To install BPSRender as a standalone command line utility, use [PiPy](https://pypi.org/project/bpsrender/): `pip install [--user] bpsrender`. 
+
+*You must have `$HOME/.local/bin` included in your `$PATH` environment variable on GNU/Linux if you're going to install the utility locally (using `--user` when executing `pip`).*
 
 
-## Usage
+## Usage ##
 
-After installing the script, get help by writing `bpsrender -h`:
+To read the help, after you installed BPSRender, type `bpsrender -h` in the shell:
 
 ```
 usage: bpsrender [-h] [-o OUTPUT] [-w WORKERS] [-v] [--dry-run] [-s START]
@@ -49,14 +53,14 @@ optional arguments:
                         produce the final render
 ```
 
-## External Dependencies
+## External Dependencies ##
 
 BPSRender requires
 
 - `blender`
 - `ffmpeg`
 
-to be available in the `$PATH` environment variable in order to work. In case BPSRender will catch a missing dependency it will throw a message error similar to this:
+to be available in the `$PATH` environment variable in order to work. If BPSRender catches a missing dependency it throws a an error similar to this:
 
 ```
 BPSRender couldn't find external dependencies:
@@ -66,7 +70,29 @@ Check if you have them properly installed and available in the PATH environemnt 
 Exiting...
 ```
 
-## Known Issues
+## Tips ##
+
+Here are some tips about using BPSRender as a command line utility.
+
+### Deleting the temporary folder after a successful render ###
+
+BPSRender creates a `bpsrender/` folder next to the `blendfile` it renders. There, it stores rendered video parts, the audio soundtrack from the project, and a text file to stitch the parts together. It does not automatically delete this folder at the moment. To do so, using the GNU/Linux shell, you can use these commands:
+
+```shell
+bpsrender my_file.blend && rm -rf bpsrender
+```
+
+After the render finished successfully, this will delete the `bpsrender` folder.
+
+### Rendering multiple projects with POSIX shells ###
+
+You can render many projects one after the other from the terminal using the `find` command:
+
+```shell
+find . -name "*.blend" -exec bpsrender {} \;
+```
+
+## Known Issues ##
 
 - [  ] CTRL-C interrupt leaves subprocesses running in the background
 - [  ] CTRL-C interrupt doesn't clean the folders yet
