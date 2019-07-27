@@ -30,9 +30,8 @@ def setup_bspy(cfg, clargs, **kwargs):
     out: dict
     Dictoinary to be used in call steps.
     """
-    out = filter(lambda x: x[0].endswith('_py'), cfg.items())
-    out = starmap(lambda k, v: ('{}_normalized'.format(k),
-                                osp.join(cfg['bs_path'], v)), out)
+    out = filter(lambda x: x[0].endswith("_py"), cfg.items())
+    out = starmap(lambda k, v: ("{}_normalized".format(k), osp.join(cfg["bs_path"], v)), out)
     return dict(out)
 
 
@@ -57,8 +56,7 @@ def setup_probe(cfg, clargs, **kwargs):
     out: dict
     Dictoinary to be used in call steps.
     """
-    return call(cfg, clargs, get_commands(cfg, clargs, 'probe', **kwargs),
-                **kwargs)
+    return call(cfg, clargs, get_commands(cfg, clargs, "probe", **kwargs), **kwargs)
 
 
 def setup_paths(cfg, clargs, **kwargs):
@@ -87,25 +85,23 @@ def setup_paths(cfg, clargs, **kwargs):
     It also creates the folder structure 'render/parts' where
     `clargs.blendfile` is stored on disk.
     """
-    render_parts_path = osp.join(clargs.output, cfg['parts_folder'])
+    render_parts_path = osp.join(clargs.output, cfg["parts_folder"])
     name = osp.splitext(osp.basename(clargs.blendfile))[0]
-    render_mixdown_path = osp.join(
-        render_parts_path, '{}_m.flac'.format(name))
-    render_chunk_path = osp.join(
-        render_parts_path, '{}_c_{}'.format(name, '#' * cfg['frame_pad']))
-    render_video_path = osp.join(
-        render_parts_path, '{}_v{}'.format(name, kwargs['ext']))
-    render_audiovideo_path = osp.join(
-        clargs.output, '{}{}'.format(name, kwargs['ext']))
-    chunks_file_path = osp.join(render_parts_path, cfg['chunks_file'])
+    render_mixdown_path = osp.join(render_parts_path, "{}_m.flac".format(name))
+    render_chunk_path = osp.join(render_parts_path, "{}_c_{}".format(name, "#" * cfg["frame_pad"]))
+    render_video_path = osp.join(render_parts_path, "{}_v{}".format(name, kwargs["ext"]))
+    render_audiovideo_path = osp.join(clargs.output, "{}{}".format(name, kwargs["ext"]))
+    chunks_file_path = osp.join(render_parts_path, cfg["chunks_file"])
 
-    out = {'render_path': clargs.output,
-           'render_parts_path': render_parts_path,
-           'chunks_file_path': chunks_file_path,
-           'render_chunk_path': render_chunk_path,
-           'render_video_path': render_video_path,
-           'render_mixdown_path': render_mixdown_path,
-           'render_audiovideo_path': render_audiovideo_path}
+    out = {
+        "render_path": clargs.output,
+        "render_parts_path": render_parts_path,
+        "chunks_file_path": chunks_file_path,
+        "render_chunk_path": render_chunk_path,
+        "render_video_path": render_video_path,
+        "render_mixdown_path": render_mixdown_path,
+        "render_audiovideo_path": render_audiovideo_path,
+    }
     return out
 
 
@@ -131,11 +127,10 @@ def setup_folders_hdd(cfg, clargs, **kwargs):
     """
     # create folder structure if it doesn't exist already only if
     # appropriate command line arguments are given
-    do_it = filter(lambda x: x[0].endswith('_only'), vars(clargs).items())
+    do_it = filter(lambda x: x[0].endswith("_only"), vars(clargs).items())
     do_it = all(map(lambda x: not x[1], do_it))
-    do_it = (not clargs.dry_run
-             and clargs.video_only or clargs.mixdown_only or do_it)
-    do_it and os.makedirs(kwargs['render_parts_path'], exist_ok=True)
+    do_it = not clargs.dry_run and clargs.video_only or clargs.mixdown_only or do_it
+    do_it and os.makedirs(kwargs["render_parts_path"], exist_ok=True)
     return {}
 
 
@@ -161,18 +156,11 @@ def setup(cfg, clargs):
     1st element: see commands.py:get_commands_all
     2nd elment: the keyword arguments used by calls.py:call
     """
-    setups_f = (setup_bspy,
-                setup_probe,
-                setup_paths,
-                setup_folders_hdd)
+    setups_f = (setup_bspy, setup_probe, setup_paths, setup_folders_hdd)
     lg.basicConfig(level=LOGLEV[min(clargs.verbose, len(LOGLEV) - 1)])
 
-    kwargs = dict(reduce(lambda acc, sf: {**acc, **sf(cfg, clargs, **acc)},
-                         setups_f, {}))
+    kwargs = dict(reduce(lambda acc, sf: {**acc, **sf(cfg, clargs, **acc)}, setups_f, {}))
 
-    LOGGER.info('Setup:')
-    kickstart(starmap(lambda k, v:
-                      LOGGER.info('{}: {}'.format(k, v)),
-                      kwargs.items()))
+    LOGGER.info("Setup:")
+    kickstart(starmap(lambda k, v: LOGGER.info("{}: {}".format(k, v)), kwargs.items()))
     return get_commands_all(cfg, clargs, **kwargs), kwargs
-

@@ -37,7 +37,7 @@ def chunk_frames(cfg, clargs, cmds, **kwargs):
     """
     out = map(lambda x: (x, islice(x, 1, None)), cmds)
     out = map(lambda x: zip(*x), out)
-    out = map(lambda x: filter(lambda y: y[0] in ('-s', '-e'), x), out)
+    out = map(lambda x: filter(lambda y: y[0] in ("-s", "-e"), x), out)
     out = map(lambda x: map(lambda y: int(y[1]), x), out)
     out = map(lambda x: reduce(lambda acc, y: acc + (y,), x, ()), out)
     return out
@@ -61,13 +61,16 @@ def append_chunks_file(cfg, clargs, cmds, **kwargs):
     MANDATORY w_frame_start, w_frame_end, ext
     Dictionary with additional information from the setup step.
     """
-    with open(kwargs['chunks_file_path'], 'a') as f:
+    with open(kwargs["chunks_file_path"], "a") as f:
         for fs, fe in chunk_frames(cfg, clargs, cmds, **kwargs):
-            f.write("file '{rcp}{fs}-{fe}{ext}'\n".format(
-                rcp=kwargs['render_chunk_path'].rstrip('#'),
-                fs='{fs:0{frame_pad}d}'.format(fs=fs, **cfg),
-                fe='{fe:0{frame_pad}d}'.format(fe=fe, **cfg),
-                **kwargs))
+            f.write(
+                "file '{rcp}{fs}-{fe}{ext}'\n".format(
+                    rcp=kwargs["render_chunk_path"].rstrip("#"),
+                    fs="{fs:0{frame_pad}d}".format(fs=fs, **cfg),
+                    fe="{fe:0{frame_pad}d}".format(fe=fe, **cfg),
+                    **kwargs
+                )
+            )
 
 
 def call_probe(cfg, clargs, cmds, **kwargs):
@@ -93,19 +96,16 @@ def call_probe(cfg, clargs, cmds, **kwargs):
     Dictionary with info extracted from `clargs.blendfile`, namely: start
     frame, end frame and extension (only useful for video step).
     """
-    kwargs_p = {'stdout': sp.PIPE,
-                'stderr': sp.STDOUT,
-                'universal_newlines': True}
+    kwargs_p = {"stdout": sp.PIPE, "stderr": sp.STDOUT, "universal_newlines": True}
 
-    printw(cfg, 'Probing')
-    printw(cfg, 'Input(blend) @ {}'.format(clargs.blendfile), s='')
-    frame_start, frame_end, ext = (0, 0, '')
+    printw(cfg, "Probing")
+    printw(cfg, "Input(blend) @ {}".format(clargs.blendfile), s="")
+    frame_start, frame_end, ext = (0, 0, "")
     if not clargs.dry_run:
         with sp.Popen(next(cmds), **kwargs_p) as cp:
             try:
-                tmp = map(partial(checkblender, 'PROBE', [cfg['probe_py']], cp),
-                          cp.stdout)
-                tmp = filter(lambda x: x.startswith('BPS'), tmp)
+                tmp = map(partial(checkblender, "PROBE", [cfg["probe_py"]], cp), cp.stdout)
+                tmp = filter(lambda x: x.startswith("BPS"), tmp)
                 tmp = map(lambda x: x[4:].strip().split(), tmp)
                 frame_start, frame_end, ext = chain(*tmp)
             except BSError as e:
@@ -119,13 +119,15 @@ def call_probe(cfg, clargs, cmds, **kwargs):
             raise sp.CalledProcessError(returncode, cp.args)
     frame_start = frame_start if clargs.start is None else clargs.start
     frame_end = frame_end if clargs.end is None else clargs.end
-    out = {'frame_start': int(frame_start),
-           'frame_end': int(frame_end),
-           'frames_total': int(frame_end) - int(frame_start) + 1,
-           'ext': ext}
-    if out['ext'] == 'UNDEFINED':
-        raise BSError('Video extension is {ext}. Stopping!'.format(ext=ext))
-    printd(cfg, 'Probing done')
+    out = {
+        "frame_start": int(frame_start),
+        "frame_end": int(frame_end),
+        "frames_total": int(frame_end) - int(frame_start) + 1,
+        "ext": ext,
+    }
+    if out["ext"] == "UNDEFINED":
+        raise BSError("Video extension is {ext}. Stopping!".format(ext=ext))
+    printd(cfg, "Probing done")
     return out
 
 
@@ -146,18 +148,15 @@ def call_mixdown(cfg, clargs, cmds, **kwargs):
     MANDATORY render_mixdown_path
     Dictionary with additional information from the setup step.
     """
-    kwargs_p = {'stdout': sp.PIPE,
-                'stderr': sp.STDOUT,
-                'universal_newlines': True}
+    kwargs_p = {"stdout": sp.PIPE, "stderr": sp.STDOUT, "universal_newlines": True}
 
-    printw(cfg, 'Rendering mixdown')
-    printw(cfg, 'Output @ {}'.format(kwargs['render_mixdown_path']), s='')
+    printw(cfg, "Rendering mixdown")
+    printw(cfg, "Output @ {}".format(kwargs["render_mixdown_path"]), s="")
     if not clargs.dry_run:
         with sp.Popen(next(cmds), **kwargs_p) as cp:
             try:
-                tmp = map(partial(checkblender, 'MIXDOWN',
-                                  [cfg['mixdown_py']], cp), cp.stdout)
-                tmp = filter(lambda x: x.startswith('BPS'), tmp)
+                tmp = map(partial(checkblender, "MIXDOWN", [cfg["mixdown_py"]], cp), cp.stdout)
+                tmp = filter(lambda x: x.startswith("BPS"), tmp)
                 tmp = map(lambda x: x[4:].strip().split(), tmp)
                 kickstart(tmp)
             except BSError as e:
@@ -169,7 +168,7 @@ def call_mixdown(cfg, clargs, cmds, **kwargs):
         returncode = cp.poll()
         if returncode != 0:
             raise sp.CalledProcessError(returncode, cp.args)
-    printd(cfg, 'Mixdown done')
+    printd(cfg, "Mixdown done")
 
 
 def call_chunk(cfg, clargs, queue, cmd, **kwargs):
@@ -189,17 +188,22 @@ def call_chunk(cfg, clargs, queue, cmd, **kwargs):
     Dictionary with additional information from the setup step.
     """
     sig.signal(sig.SIGINT, sig.SIG_IGN)
-    kwargs_p = {'stdout': sp.PIPE,
-                'stderr': sp.STDOUT,
-                'universal_newlines': True}
+    kwargs_p = {"stdout": sp.PIPE, "stderr": sp.STDOUT, "universal_newlines": True}
 
     if not clargs.dry_run:
         # can't use nice functional syntax if we want to simplify with `with`
         with sp.Popen(cmd, **kwargs_p) as cp:
             try:
-                tmp = map(partial(checkblender, 'VIDEO', [cfg['video_py'], 'The encoder timebase is not set'], cp),
-                          cp.stdout)
-                tmp = filter(lambda x: x.startswith('Append frame'), tmp)
+                tmp = map(
+                    partial(
+                        checkblender,
+                        "VIDEO",
+                        [cfg["video_py"], "The encoder timebase is not set"],
+                        cp,
+                    ),
+                    cp.stdout,
+                )
+                tmp = filter(lambda x: x.startswith("Append frame"), tmp)
                 tmp = map(lambda x: x.split()[-1], tmp)
                 tmp = map(int, tmp)
                 tmp = map(lambda x: True, tmp)
@@ -225,28 +229,23 @@ def call_video(cfg, clargs, cmds, **kwargs):
     kwargs: dict
     Dictionary with additional information from the setup step.
     """
-    printw(cfg, 'Rendering video (w/o audio)')
-    printw(cfg, 'Output @ {}'.format(kwargs['render_chunk_path']), s='')
+    printw(cfg, "Rendering video (w/o audio)")
+    printw(cfg, "Output @ {}".format(kwargs["render_chunk_path"]), s="")
     try:
-        not clargs.dry_run and os.remove(kwargs['chunks_file_path'])
-        LOGGER.info('CALL-VIDEO: generating {}'
-                    .format(kwargs['chunks_file_path']))
+        not clargs.dry_run and os.remove(kwargs["chunks_file_path"])
+        LOGGER.info("CALL-VIDEO: generating {}".format(kwargs["chunks_file_path"]))
     except OSError as e:
-        LOGGER.info('CALL-VIDEO: skipping {}: {}'
-                    .format(e.filename, e.strerror))
+        LOGGER.info("CALL-VIDEO: skipping {}: {}".format(e.filename, e.strerror))
 
     cmds, cmds_cf = tee(cmds)
-    (not clargs.dry_run
-     and append_chunks_file(cfg, clargs, cmds_cf, **kwargs))
+    (not clargs.dry_run and append_chunks_file(cfg, clargs, cmds_cf, **kwargs))
     # prepare queue/worker
     queues = queues_close = (Queue(),) * clargs.workers
     # prpare processes
-    proc = starmap(lambda q, cmd:
-                   mp.Process(target=partial(call_chunk,
-                                             cfg,
-                                             clargs,
-                                             **kwargs),
-                              args=(q, cmd)), zip(queues, cmds))
+    proc = starmap(
+        lambda q, cmd: mp.Process(target=partial(call_chunk, cfg, clargs, **kwargs), args=(q, cmd)),
+        zip(queues, cmds),
+    )
     # split iterator in 2 for later joining the processes and sum
     # one of them
     proc, proc_close = tee(proc)
@@ -258,9 +257,7 @@ def call_video(cfg, clargs, cmds, **kwargs):
         # simple terminal progress bar baesd on video total frames
         queues = map(lambda q: iter(q.get, False), queues)
         queues = chain(*queues)
-        queues = tqdm(queues,
-                      total=kwargs['frame_end'] - kwargs['frame_start'] + 1,
-                      unit='frames')
+        queues = tqdm(queues, total=kwargs["frame_end"] - kwargs["frame_start"] + 1, unit="frames")
         not clargs.dry_run and kickstart(queues)
     except KeyboardInterrupt:
         proc_close = map(lambda x: x.terminate(), proc_close)
@@ -274,7 +271,7 @@ def call_video(cfg, clargs, cmds, **kwargs):
         queues_close = map(lambda q: (q, q.close()), queues_close)
         queues_close = starmap(lambda q, _: q.join_thread(), queues_close)
         not clargs.dry_run and kickstart(queues_close)
-    printd(cfg, 'Video chunks rendering done')
+    printd(cfg, "Video chunks rendering done")
 
 
 def call_concatenate(cfg, clargs, cmds, **kwargs):
@@ -298,10 +295,9 @@ def call_concatenate(cfg, clargs, cmds, **kwargs):
     ----
     It expects the video chunk files to already be available.
     """
-    kwargs_p = {'stdout': sp.DEVNULL,
-                'stderr': sp.DEVNULL}
-    printw(cfg, 'Concatenating (video) chunks')
-    printw(cfg, 'Output @ {}'.format(kwargs['render_video_path']), s='')
+    kwargs_p = {"stdout": sp.DEVNULL, "stderr": sp.DEVNULL}
+    printw(cfg, "Concatenating (video) chunks")
+    printw(cfg, "Output @ {}".format(kwargs["render_video_path"]), s="")
     if not clargs.dry_run:
         with sp.Popen(next(cmds), **kwargs_p) as cp:
             try:
@@ -312,7 +308,7 @@ def call_concatenate(cfg, clargs, cmds, **kwargs):
                 raise
             finally:
                 cp.terminate()
-    printd(cfg, 'Concatenating done')
+    printd(cfg, "Concatenating done")
 
 
 def call_join(cfg, clargs, cmds, **kwargs):
@@ -336,10 +332,9 @@ def call_join(cfg, clargs, cmds, **kwargs):
     ----
     It expects the audio mixdown and video files to already be available.
     """
-    kwargs_p = {'stdout': sp.DEVNULL,
-                'stderr': sp.DEVNULL}
-    printw(cfg, 'Joining audio/video')
-    printw(cfg, 'Output @ {}'.format(kwargs['render_audiovideo_path']), s='')
+    kwargs_p = {"stdout": sp.DEVNULL, "stderr": sp.DEVNULL}
+    printw(cfg, "Joining audio/video")
+    printw(cfg, "Output @ {}".format(kwargs["render_audiovideo_path"]), s="")
     if not clargs.dry_run:
         with sp.Popen(next(cmds), **kwargs_p) as cp:
             try:
@@ -350,7 +345,7 @@ def call_join(cfg, clargs, cmds, **kwargs):
                 raise
             finally:
                 cp.terminate()
-    printd(cfg, 'Joining done')
+    printd(cfg, "Joining done")
 
 
 def call(cfg, clargs, cmds, **kwargs):
@@ -382,15 +377,18 @@ def call(cfg, clargs, cmds, **kwargs):
     Example if `--join-only` is passed, but the audio mixdown or video file
     aren't available on hard drive.
     """
-    calls = {'probe': call_probe,
-             'mixdown': call_mixdown,
-             'video': call_video,
-             'concatenate': call_concatenate,
-             'join': call_join}
+    calls = {
+        "probe": call_probe,
+        "mixdown": call_mixdown,
+        "video": call_video,
+        "concatenate": call_concatenate,
+        "join": call_join,
+    }
     try:
         out = calls[cmds[0]](cfg, clargs, cmds[1], **kwargs)
         return out
     except sp.CalledProcessError:
-        prints(cfg, ('WARNING:{}: Something went wrong when calling'
-                     ' command - SKIPPING').format(cmds[0]))
-
+        prints(
+            cfg,
+            ("WARNING:{}: Something went wrong when calling" " command - SKIPPING").format(cmds[0]),
+        )
