@@ -22,6 +22,8 @@ if __name__ == "__main__":
     for strip in bpy.context.scene.sequence_editor.sequences_all:
         if strip.type == "META":
             continue
+        if strip.type == "SCENE":
+            continue
         if strip.type != "SOUND":
             strip.mute = True
 
